@@ -9,6 +9,7 @@ Desktop.ini
 
 # OS
 .DS_Store
+.claude/
 
 # C# / .NET
 bin/
@@ -17,3 +18,7 @@ obj/
 *.user
 *.suo
 .idea/
+.nuget/
+tools/
+*.log
+temp-compile.*

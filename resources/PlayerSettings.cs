@@ -10,12 +10,12 @@ public partial class PlayerSettings : Resource
     /// 键位绑定：外层数组为轨道，内层数组为该轨道绑定的 InputMap action 名（最多2个）
     /// </summary>
     [Export]
-    public Array<Array> KeyBindings { get; set; } =
+    public Godot.Collections.Array<Godot.Collections.Array> KeyBindings { get; set; } =
     [
-        (Array)["lane_0_primary", "lane_0_secondary"],
-        (Array)["lane_1_primary", "lane_1_secondary"],
-        (Array)["lane_2_primary", "lane_2_secondary"],
-        (Array)["lane_3_primary", "lane_3_secondary"],
+        new Godot.Collections.Array { "lane_0_primary", "lane_0_secondary" },
+        new Godot.Collections.Array { "lane_1_primary", "lane_1_secondary" },
+        new Godot.Collections.Array { "lane_2_primary", "lane_2_secondary" },
+        new Godot.Collections.Array { "lane_3_primary", "lane_3_secondary" },
     ];
 
     /// <summary>默认4K键位对应的 Godot Key 枚举</summary>

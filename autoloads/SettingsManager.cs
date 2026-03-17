@@ -5,7 +5,7 @@ namespace RhythmicGame;
 /// <summary>玩家设置的读写与广播。注册为 Autoload。</summary>
 public partial class SettingsManager : Node
 {
-    [Signal] public delegate void SettingsChangedEventHandler(string key);
+    public event Action<string>? SettingsChanged;
 
     public PlayerSettings Settings { get; private set; } = new();
 
@@ -22,14 +22,14 @@ public partial class SettingsManager : Node
     {
         Settings.GlobalOffset = ms;
         Save();
-        EmitSignal(SignalName.SettingsChanged, "GlobalOffset");
+        SettingsChanged?.Invoke("GlobalOffset");
     }
 
     public void SetScrollSpeed(float speed)
     {
         Settings.ScrollSpeed = Mathf.Clamp(speed, 0.5f, 5.0f);
         Save();
-        EmitSignal(SignalName.SettingsChanged, "ScrollSpeed");
+        SettingsChanged?.Invoke("ScrollSpeed");
     }
 
     public void SetMusicVolume(float linear)
@@ -37,7 +37,7 @@ public partial class SettingsManager : Node
         Settings.MusicVolume = Mathf.Clamp(linear, 0f, 1f);
         GetNode<AudioManager>("/root/AudioManager").SetMusicVolume(Settings.MusicVolume);
         Save();
-        EmitSignal(SignalName.SettingsChanged, "MusicVolume");
+        SettingsChanged?.Invoke("MusicVolume");
     }
 
     public void SetSfxVolume(float linear)
@@ -45,14 +45,14 @@ public partial class SettingsManager : Node
         Settings.SfxVolume = Mathf.Clamp(linear, 0f, 1f);
         GetNode<AudioManager>("/root/AudioManager").SetSfxVolume(Settings.SfxVolume);
         Save();
-        EmitSignal(SignalName.SettingsChanged, "SfxVolume");
+        SettingsChanged?.Invoke("SfxVolume");
     }
 
     public void SetDefaultFailMode(PlayerSettings.FailMode mode)
     {
         Settings.DefaultFailMode = mode;
         Save();
-        EmitSignal(SignalName.SettingsChanged, "DefaultFailMode");
+        SettingsChanged?.Invoke("DefaultFailMode");
     }
 
     public void SetLastSong(string songId, string difficulty)

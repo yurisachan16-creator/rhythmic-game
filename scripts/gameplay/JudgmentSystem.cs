@@ -8,11 +8,7 @@ namespace RhythmicGame;
 /// </summary>
 public partial class JudgmentSystem : Node
 {
-    [Signal]
-    public delegate void NoteJudgedEventHandler(
-        NoteData note,
-        int judgment,        // Constants.Judgment 强转为 int（GDSignal 限制）
-        double deltaMs);     // 正=晚，负=早
+    public event Action<NoteData, int, double>? NoteJudged;
 
     private ChartData? _chart;
     private Dictionary<Constants.Judgment, double> _windows = [];
@@ -69,13 +65,13 @@ public partial class JudgmentSystem : Node
         if (note.Type == NoteData.NoteType.Tap)
         {
             MarkJudged(note, lane);
-            EmitSignal(SignalName.NoteJudged, note, (int)judgment, deltaMs);
+            NoteJudged?.Invoke(note, (int)judgment, deltaMs);
         }
         else if (note.Type is NoteData.NoteType.Hold or NoteData.NoteType.Slide)
         {
             // 头部命中，开始持续追踪
             note.IsHoldActive = true;
-            EmitSignal(SignalName.NoteJudged, note, (int)judgment, deltaMs);
+            NoteJudged?.Invoke(note, (int)judgment, deltaMs);
         }
     }
 
@@ -93,7 +89,7 @@ public partial class JudgmentSystem : Node
             : GetJudgment(absDelta);
 
         MarkJudged(note, lane);
-        EmitSignal(SignalName.NoteJudged, note, (int)judgment, deltaMs);
+        NoteJudged?.Invoke(note, (int)judgment, deltaMs);
     }
 
     private void CheckMiss(int lane, double nowMs)
@@ -105,7 +101,7 @@ public partial class JudgmentSystem : Node
         if (deltaMs > _windows[Constants.Judgment.Bad])
         {
             MarkJudged(note, lane);
-            EmitSignal(SignalName.NoteJudged, note, (int)Constants.Judgment.Miss, deltaMs);
+            NoteJudged?.Invoke(note, (int)Constants.Judgment.Miss, deltaMs);
         }
     }
 

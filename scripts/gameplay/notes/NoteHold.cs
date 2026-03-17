@@ -10,6 +10,13 @@ public partial class NoteHold : NoteBase
 
     private double _holdLengthMs = 0.0;
 
+    public override void _Ready()
+    {
+        Head ??= GetNodeOrNull<ColorRect>("Head");
+        Body ??= GetNodeOrNull<ColorRect>("Body");
+        Tail ??= GetNodeOrNull<ColorRect>("Tail");
+    }
+
     public override void Initialize(NoteData data, double leadTimeMs)
     {
         base.Initialize(data, leadTimeMs);

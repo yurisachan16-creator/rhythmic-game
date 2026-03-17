@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/gameplay/notes/NoteTap.cs" id="1_tap"]
+
+[node name="NoteTap" type="Node2D"]
+script = ExtResource("1_tap")
+
+[node name="Body" type="ColorRect" parent="."]
+offset_left = -42.0
+offset_top = -16.0
+offset_right = 42.0
+offset_bottom = 16.0
+color = Color(0.4, 0.8, 1, 1)
+
+[node name="HitFx" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 12
+lifetime = 0.2
+one_shot = true
+explosiveness = 1.0
+initial_velocity_min = 30.0
+initial_velocity_max = 75.0
+spread = 90.0
+gravity = Vector2(0, 0)
+scale_amount_min = 1.5
+scale_amount_max = 3.0

@@ -7,7 +7,7 @@ public partial class GameManager : Node
 {
     public enum GameState { MainMenu, SongSelect, Gameplay, Result, Settings, Tutorial }
 
-    [Signal] public delegate void GameStateChangedEventHandler(GameState newState);
+    public event Action<GameState>? GameStateChanged;
 
     public GameState CurrentState { get; private set; } = GameState.MainMenu;
 
@@ -56,6 +56,6 @@ public partial class GameManager : Node
     private void ChangeState(GameState newState)
     {
         CurrentState = newState;
-        EmitSignal(SignalName.GameStateChanged, (int)newState);
+        GameStateChanged?.Invoke(newState);
     }
 }

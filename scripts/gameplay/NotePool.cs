@@ -18,6 +18,9 @@ public partial class NotePool : Node
 
     public override void _Ready()
     {
+        TapScene ??= ResourceLoader.Load<PackedScene>("res://scenes/gameplay/NoteTap.tscn");
+        HoldScene ??= ResourceLoader.Load<PackedScene>("res://scenes/gameplay/NoteHold.tscn");
+
         // 预热对象池
         for (int i = 0; i < InitialPoolSize; i++)
         {
@@ -48,6 +51,12 @@ public partial class NotePool : Node
 
     public void ReleaseNote(NoteBase note, NoteData.NoteType type)
     {
+        if (note.GetParent() != this)
+        {
+            note.GetParent()?.RemoveChild(note);
+            AddChild(note);
+        }
+
         note.Visible = false;
         note.Reset();
         GetPool(type).Enqueue(note);

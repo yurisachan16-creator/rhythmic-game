@@ -10,6 +10,14 @@ public partial class Lane : Node2D
     [Export] public Line2D?          JudgmentLine  { get; set; }
     [Export] public CpuParticles2D?  HitEffect     { get; set; }
 
+    public override void _Ready()
+    {
+        Background ??= GetNodeOrNull<ColorRect>("Background");
+        NoteContainer ??= GetNodeOrNull<Node2D>("NoteContainer");
+        JudgmentLine ??= GetNodeOrNull<Line2D>("JudgmentLine");
+        HitEffect ??= GetNodeOrNull<CpuParticles2D>("HitEffect");
+    }
+
     /// <summary>按下时触发视觉反馈</summary>
     public void OnPressed()
     {

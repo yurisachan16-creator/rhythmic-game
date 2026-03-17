@@ -8,11 +8,12 @@ namespace RhythmicGame;
 /// </summary>
 public partial class NoteSpawner : Node
 {
-    [Signal] public delegate void ChartFinishedEventHandler();
+    public event Action? ChartFinished;
 
     private ChartData?  _chart;
     private NotePool?   _pool;
     private Node2D[]?   _laneContainers;  // 每条轨道的 NoteContainer 节点
+    private readonly Dictionary<NoteData, NoteBase> _spawnedNotes = [];
     private int         _spawnIndex = 0;
 
     /// <summary>音符出现到判定线所需的时间（毫秒），由滚速计算</summary>
@@ -27,6 +28,7 @@ public partial class NoteSpawner : Node
         _laneContainers = laneContainers;
         _spawnIndex     = 0;
         _chartEnded     = false;
+        _spawnedNotes.Clear();
         RecalculateLeadTime();
     }
 
@@ -49,7 +51,7 @@ public partial class NoteSpawner : Node
         if (!_chartEnded && nowMs > _chart.DurationMs + 2000.0)
         {
             _chartEnded = true;
-            EmitSignal(SignalName.ChartFinished);
+            ChartFinished?.Invoke();
         }
     }
 
@@ -63,6 +65,14 @@ public partial class NoteSpawner : Node
         _leadTimeMs = travelPx / speedPxPerMs;
     }
 
+    public void OnNoteJudged(NoteData note, int judgmentInt, double deltaMs)
+    {
+        if (_pool is null) return;
+        if (!_spawnedNotes.Remove(note, out var noteNode)) return;
+
+        _pool.ReleaseNote(noteNode, note.Type);
+    }
+
     // ── 私有 ──────────────────────────────────────────────────
 
     private void SpawnNote(NoteData noteData)
@@ -72,6 +82,7 @@ public partial class NoteSpawner : Node
 
         var noteNode = _pool.GetNote(noteData.Type);
         noteNode.Initialize(noteData, _leadTimeMs);
+        _spawnedNotes[noteData] = noteNode;
 
         _laneContainers[noteData.Lane].AddChild(noteNode);
     }

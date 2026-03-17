@@ -5,9 +5,9 @@ namespace RhythmicGame;
 /// <summary>分数、连击、准确率、血条追踪器。</summary>
 public partial class ScoreTracker : Node
 {
-    [Signal] public delegate void ScoreUpdatedEventHandler(int score, int combo, double accuracy);
-    [Signal] public delegate void HealthChangedEventHandler(float health);
-    [Signal] public delegate void ComboBreakEventHandler();
+    public event Action<int, int, double>? ScoreUpdated;
+    public event Action<float>? HealthChanged;
+    public event Action? ComboBreak;
 
     // ── 公开状态 ──────────────────────────────────────────────
     public int    Score       { get; private set; } = 0;
@@ -34,6 +34,8 @@ public partial class ScoreTracker : Node
 
     public void Initialize(ChartData chart, PlayerSettings.FailMode failMode)
     {
+        ResetState();
+
         _totalNotes    = chart.TotalNotes;
         _noteBaseScore = _totalNotes > 0 ? 1_000_000.0 / _totalNotes : 0.0;
         _failMode      = failMode;
@@ -45,6 +47,9 @@ public partial class ScoreTracker : Node
             PlayerSettings.FailMode.NoFail => 100f,
             _                               => 50f,
         };
+
+        ScoreUpdated?.Invoke(Score, Combo, Accuracy);
+        HealthChanged?.Invoke(Health);
     }
 
     /// <summary>由 JudgmentSystem.NoteJudged 信号触发</summary>
@@ -83,14 +88,14 @@ public partial class ScoreTracker : Node
         }
         else
         {
-            if (Combo > 0) EmitSignal(SignalName.ComboBreak);
+            if (Combo > 0) ComboBreak?.Invoke();
             Combo = 0;
         }
 
         // 血条
         UpdateHealth(judgment);
 
-        EmitSignal(SignalName.ScoreUpdated, Score, Combo, Accuracy);
+        ScoreUpdated?.Invoke(Score, Combo, Accuracy);
     }
 
     private void UpdateHealth(Constants.Judgment judgment)
@@ -106,6 +111,24 @@ public partial class ScoreTracker : Node
         };
 
         Health = Mathf.Clamp(Health - drain, 0f, 100f);
-        EmitSignal(SignalName.HealthChanged, Health);
+        HealthChanged?.Invoke(Health);
+    }
+
+    private void ResetState()
+    {
+        Score           = 0;
+        Combo           = 0;
+        MaxCombo        = 0;
+        Health          = 50f;
+        Accuracy        = 1.0;
+        IsFullCombo     = true;
+        IsAllPerfect    = true;
+        CountMaxPerfect = 0;
+        CountPerfect    = 0;
+        CountGreat      = 0;
+        CountGood       = 0;
+        CountBad        = 0;
+        CountMiss       = 0;
+        _accNumerator   = 0.0;
     }
 }

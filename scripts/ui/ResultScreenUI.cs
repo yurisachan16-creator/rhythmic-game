@@ -28,13 +28,28 @@ public partial class ResultScreenUI : Node
 
     public override void _Ready()
     {
+        GradeLabel ??= GetNodeOrNull<Label>("GradeValue");
+        ScoreLabel ??= GetNodeOrNull<Label>("ScoreValue");
+        AccuracyLabel ??= GetNodeOrNull<Label>("AccuracyValue");
+        MaxComboLabel ??= GetNodeOrNull<Label>("ComboValue");
+        MaxPerfectLabel ??= GetNodeOrNull<Label>("MaxPerfectValue");
+        PerfectLabel ??= GetNodeOrNull<Label>("PerfectValue");
+        GreatLabel ??= GetNodeOrNull<Label>("GreatValue");
+        GoodLabel ??= GetNodeOrNull<Label>("GoodValue");
+        BadLabel ??= GetNodeOrNull<Label>("BadValue");
+        MissLabel ??= GetNodeOrNull<Label>("MissValue");
+        BadgeLabel ??= GetNodeOrNull<Label>("BadgeValue");
+        NewRecordLabel ??= GetNodeOrNull<Label>("NewRecordValue");
+        RetryButton ??= GetNodeOrNull<Button>("RetryButton");
+        BackButton ??= GetNodeOrNull<Button>("BackButton");
+
         _game = GetNode<GameManager>("/root/GameManager");
 
         if (LastTracker is not null)
             PopulateUI(LastTracker);
 
-        RetryButton?.Pressed.Connect(OnRetry);  // TODO
-        BackButton?.Pressed.Connect(OnBack);
+        if (RetryButton is not null) RetryButton.Pressed += OnRetry;  // TODO
+        if (BackButton is not null) BackButton.Pressed += OnBack;
     }
 
     private void PopulateUI(ScoreTracker tracker)

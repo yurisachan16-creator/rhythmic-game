@@ -1,0 +1,95 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scripts/gameplay/GameplayController.cs" id="1_controller"]
+[ext_resource type="PackedScene" path="res://scenes/gameplay/Lane.tscn" id="2_lane"]
+[ext_resource type="Script" path="res://scripts/gameplay/InputHandler.cs" id="3_input"]
+[ext_resource type="Script" path="res://scripts/gameplay/NoteSpawner.cs" id="4_spawner"]
+[ext_resource type="Script" path="res://scripts/gameplay/NotePool.cs" id="5_pool"]
+[ext_resource type="Script" path="res://scripts/gameplay/JudgmentSystem.cs" id="6_judgment"]
+[ext_resource type="Script" path="res://scripts/gameplay/ScoreTracker.cs" id="7_score"]
+[ext_resource type="Script" path="res://scripts/ui/GameplayHUD.cs" id="8_hud"]
+
+[node name="GameplayScene" type="Node2D"]
+
+[node name="Backdrop" type="ColorRect" parent="."]
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0.06, 0.07, 0.1, 1)
+
+[node name="FieldArea" type="Node2D" parent="."]
+
+[node name="Lane_0" parent="FieldArea" instance=ExtResource("2_lane")]
+position = Vector2(490, 0)
+
+[node name="Lane_1" parent="FieldArea" instance=ExtResource("2_lane")]
+position = Vector2(590, 0)
+
+[node name="Lane_2" parent="FieldArea" instance=ExtResource("2_lane")]
+position = Vector2(690, 0)
+
+[node name="Lane_3" parent="FieldArea" instance=ExtResource("2_lane")]
+position = Vector2(790, 0)
+
+[node name="InputHandler" type="Node" parent="."]
+script = ExtResource("3_input")
+
+[node name="NoteSpawner" type="Node" parent="."]
+script = ExtResource("4_spawner")
+
+[node name="NotePool" type="Node" parent="."]
+script = ExtResource("5_pool")
+
+[node name="JudgmentSystem" type="Node" parent="."]
+script = ExtResource("6_judgment")
+
+[node name="ScoreTracker" type="Node" parent="."]
+script = ExtResource("7_score")
+
+[node name="GameplayController" type="Node" parent="."]
+script = ExtResource("1_controller")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("8_hud")
+
+[node name="ScoreLabel" type="Label" parent="HUD"]
+offset_left = 32.0
+offset_top = 24.0
+offset_right = 280.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 28
+text = "0"
+
+[node name="ComboLabel" type="Label" parent="HUD"]
+offset_left = 590.0
+offset_top = 470.0
+offset_right = 690.0
+offset_bottom = 530.0
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 42
+
+[node name="AccuracyLabel" type="Label" parent="HUD"]
+offset_left = 32.0
+offset_top = 56.0
+offset_right = 280.0
+offset_bottom = 86.0
+theme_override_font_sizes/font_size = 20
+text = "100.00%"
+
+[node name="HealthBar" type="ProgressBar" parent="HUD"]
+offset_left = 930.0
+offset_top = 26.0
+offset_right = 1230.0
+offset_bottom = 54.0
+value = 50.0
+show_percentage = false
+
+[node name="JudgmentDisplay" type="Label" parent="HUD"]
+visible = false
+modulate = Color(1, 1, 1, 1)
+offset_left = 520.0
+offset_top = 520.0
+offset_right = 760.0
+offset_bottom = 572.0
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 30
+text = "PERFECT"

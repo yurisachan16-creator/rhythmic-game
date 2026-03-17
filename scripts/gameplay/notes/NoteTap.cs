@@ -8,6 +8,12 @@ public partial class NoteTap : NoteBase
     [Export] public ColorRect? Body         { get; set; }
     [Export] public CpuParticles2D? HitFx   { get; set; }
 
+    public override void _Ready()
+    {
+        Body ??= GetNodeOrNull<ColorRect>("Body");
+        HitFx ??= GetNodeOrNull<CpuParticles2D>("HitFx");
+    }
+
     public override void Initialize(NoteData data, double leadTimeMs)
     {
         base.Initialize(data, leadTimeMs);
@@ -23,6 +29,7 @@ public partial class NoteTap : NoteBase
     public override void Reset()
     {
         base.Reset();
-        HitFx?.Stop();
+        if (HitFx is not null)
+            HitFx.Emitting = false;
     }
 }

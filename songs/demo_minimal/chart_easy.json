@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "key_count": 4,
+  "od": 7,
+  "bpm_events": [
+    { "beat": 0, "bpm": 120 }
+  ],
+  "scroll_events": [],
+  "events": [],
+  "notes": [
+    { "type": "TAP", "lane": 0, "beat": 4 },
+    { "type": "TAP", "lane": 1, "beat": 5 },
+    { "type": "TAP", "lane": 2, "beat": 6 },
+    { "type": "TAP", "lane": 3, "beat": 7 },
+    { "type": "TAP", "lane": 1, "beat": 8 },
+    { "type": "TAP", "lane": 2, "beat": 8.5 },
+    { "type": "TAP", "lane": 0, "beat": 9 },
+    { "type": "TAP", "lane": 3, "beat": 9.5 },
+    { "type": "TAP", "lane": 0, "beat": 10 },
+    { "type": "TAP", "lane": 2, "beat": 10.5 },
+    { "type": "TAP", "lane": 1, "beat": 11 },
+    { "type": "TAP", "lane": 3, "beat": 11.5 },
+    { "type": "TAP", "lane": 0, "beat": 12 },
+    { "type": "TAP", "lane": 1, "beat": 13 },
+    { "type": "TAP", "lane": 2, "beat": 14 },
+    { "type": "TAP", "lane": 3, "beat": 15 }
+  ]
+}

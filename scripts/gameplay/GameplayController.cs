@@ -1,4 +1,5 @@
 using Godot;
+using System.Linq;
 
 namespace RhythmicGame;
 
@@ -14,13 +15,19 @@ public partial class GameplayController : Node
     [Export] public NotePool?       NotePool       { get; set; }
     [Export] public JudgmentSystem? JudgmentSystem { get; set; }
     [Export] public ScoreTracker?   ScoreTracker   { get; set; }
+    [Export] public GameplayHUD?    GameplayHud    { get; set; }
     [Export] public Node2D[]        LaneNodes      { get; set; } = [];
+    [Export] public string          DebugSongDir   { get; set; } = "res://songs/demo_minimal";
+    [Export] public string          DebugChartFile { get; set; } = "chart_easy.json";
+    [Export] public string          DebugDifficulty { get; set; } = "DEMO";
 
     private GameManager?    _game;
     private AudioManager?   _audio;
     private SaveManager?    _save;
     private SettingsManager _settings = null!;
 
+    private SongMeta?  _activeSongMeta;
+    private string     _activeDifficulty = "";
     private ChartData? _chart;
     private bool       _isPaused   = false;
     private bool       _hasStarted = false;
@@ -32,6 +39,20 @@ public partial class GameplayController : Node
         _save     = GetNode<SaveManager>("/root/SaveManager");
         _settings = GetNode<SettingsManager>("/root/SettingsManager");
 
+        InputHandler ??= GetNodeOrNull<InputHandler>("../InputHandler");
+        NoteSpawner ??= GetNodeOrNull<NoteSpawner>("../NoteSpawner");
+        NotePool ??= GetNodeOrNull<NotePool>("../NotePool");
+        JudgmentSystem ??= GetNodeOrNull<JudgmentSystem>("../JudgmentSystem");
+        ScoreTracker ??= GetNodeOrNull<ScoreTracker>("../ScoreTracker");
+        GameplayHud ??= GetNodeOrNull<GameplayHUD>("../HUD");
+        if (LaneNodes.Length == 0)
+            LaneNodes = GetNodeOrNull<Node>("../FieldArea")?
+                .GetChildren()
+                .OfType<Node2D>()
+                .Where(child => child.Name.ToString().StartsWith("Lane_"))
+                .OrderBy(child => child.Name.ToString())
+                .ToArray() ?? [];
+
         ConnectSignals();
         LoadChart();
     }
@@ -40,15 +61,16 @@ public partial class GameplayController : Node
 
     private void LoadChart()
     {
-        if (_game?.CurrentSongMeta is null)
+        (_activeSongMeta, _activeDifficulty) = ResolveSongContext();
+        if (_activeSongMeta is null)
         {
             GD.PushError("GameplayController: 无有效的 SongMeta");
             return;
         }
 
         _chart = ChartLoader.LoadChart(
-            _game.CurrentSongMeta.SongDir,
-            _game.CurrentChartFile);
+            _activeSongMeta.SongDir,
+            ResolveChartFile());
 
         if (_chart is null)
         {
@@ -56,6 +78,7 @@ public partial class GameplayController : Node
             return;
         }
 
+        InputHandler?.SetKeyCount(_chart.KeyCount);
         JudgmentSystem?.Initialize(_chart);
         ScoreTracker?.Initialize(_chart, _settings.Settings.DefaultFailMode);
         NoteSpawner?.Initialize(_chart, NotePool!, GetLaneContainers());
@@ -72,10 +95,10 @@ public partial class GameplayController : Node
 
     private void StartSong()
     {
-        if (_game?.CurrentSongMeta is null || _audio is null) return;
+        if (_activeSongMeta is null || _audio is null) return;
 
-        string audioPath = _game.CurrentSongMeta.SongDir
-            .PathJoin(_game.CurrentSongMeta.AudioFile);
+        string audioPath = _activeSongMeta.SongDir
+            .PathJoin(_activeSongMeta.AudioFile);
 
         var stream = ResourceLoader.Load<AudioStream>(audioPath);
         if (stream is null)
@@ -111,6 +134,7 @@ public partial class GameplayController : Node
     private void OnChartFinished()
     {
         _audio?.StopSong();
+        ResultScreenUI.LastTracker = ScoreTracker;
         SaveRecord();
         _game?.GoToResult();
     }
@@ -118,14 +142,15 @@ public partial class GameplayController : Node
     private void OnHealthZero()
     {
         _audio?.StopSong();
+        ResultScreenUI.LastTracker = ScoreTracker;
         // TODO: 播放 Stage Failed 动画后跳转
         _game?.GoToResult();
     }
 
     private void SaveRecord()
     {
-        if (_game?.CurrentSongMeta is null || ScoreTracker is null) return;
-        string chartId = $"{_game.CurrentSongMeta.Title}_{_game.CurrentDifficulty}";
+        if (_activeSongMeta is null || ScoreTracker is null) return;
+        string chartId = $"{_activeSongMeta.Title}_{_activeDifficulty}";
 
         _save?.TrySaveRecord(chartId, new SaveManager.RecordEntry(
             Score:       ScoreTracker.Score,
@@ -155,6 +180,15 @@ public partial class GameplayController : Node
         if (JudgmentSystem is not null && ScoreTracker is not null)
             JudgmentSystem.NoteJudged += ScoreTracker.OnNoteJudged;
 
+        if (JudgmentSystem is not null && GameplayHud is not null)
+            JudgmentSystem.NoteJudged += OnNoteJudged;
+
+        if (GameplayHud is not null && ScoreTracker is not null)
+            GameplayHud.ConnectToTracker(ScoreTracker);
+
+        if (JudgmentSystem is not null && NoteSpawner is not null)
+            JudgmentSystem.NoteJudged += NoteSpawner.OnNoteJudged;
+
         if (NoteSpawner is not null)
             NoteSpawner.ChartFinished += OnChartFinished;
 
@@ -180,6 +214,31 @@ public partial class GameplayController : Node
         for (int i = 0; i < LaneNodes.Length; i++)
             containers[i] = LaneNodes[i].GetNode<Node2D>("NoteContainer");
         return containers;
+    }
+
+    private (SongMeta? meta, string difficulty) ResolveSongContext()
+    {
+        if (_game?.CurrentSongMeta is not null)
+            return (_game.CurrentSongMeta, _game.CurrentDifficulty);
+
+        var debugMeta = ChartLoader.LoadMeta(DebugSongDir);
+        if (debugMeta is null)
+        {
+            GD.PushError($"GameplayController: 无法加载调试歌曲元数据 {DebugSongDir}");
+            return (null, DebugDifficulty);
+        }
+
+        return (debugMeta, DebugDifficulty);
+    }
+
+    private string ResolveChartFile() =>
+        !string.IsNullOrEmpty(_game?.CurrentChartFile)
+            ? _game.CurrentChartFile
+            : DebugChartFile;
+
+    private void OnNoteJudged(NoteData note, int judgmentInt, double deltaMs)
+    {
+        GameplayHud?.ShowJudgment((Constants.Judgment)judgmentInt);
     }
 
     public override void _Input(InputEvent @event)

@@ -1,3 +1,4 @@
+using Godot;
 using Godot.Collections;
 
 namespace RhythmicGame;
@@ -22,7 +23,7 @@ public static class BeatCalculator
     /// 将拍位（beat）转换为毫秒时间。
     /// bpmEvents 必须按 beat 升序排列。
     /// </summary>
-    public static double BeatToMs(double targetBeat, Array<Dictionary> bpmEvents)
+    public static double BeatToMs(double targetBeat, Godot.Collections.Array<Godot.Collections.Dictionary> bpmEvents)
     {
         if (bpmEvents.Count == 0)
         {

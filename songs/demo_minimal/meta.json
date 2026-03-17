@@ -1,0 +1,15 @@
+{
+  "title": "Minimal Loop",
+  "artist": "Codex Demo",
+  "bpm": 120,
+  "audio_file": "audio.wav",
+  "cover_file": "",
+  "preview_start": 0,
+  "charts": [
+    {
+      "difficulty": "DEMO",
+      "file": "chart_easy.json",
+      "level": 1
+    }
+  ]
+}

@@ -9,8 +9,8 @@ namespace RhythmicGame;
 /// </summary>
 public partial class InputHandler : Node
 {
-    [Signal] public delegate void LanePressedEventHandler(int laneIndex);
-    [Signal] public delegate void LaneReleasedEventHandler(int laneIndex);
+    public event Action<int>? LanePressed;
+    public event Action<int>? LaneReleased;
 
     private int _keyCount = 4;
 
@@ -31,9 +31,9 @@ public partial class InputHandler : Node
             if (InputMap.HasAction(primaryAction))
             {
                 if (@event.IsActionPressed(primaryAction, false))
-                    EmitSignal(SignalName.LanePressed, lane);
+                    LanePressed?.Invoke(lane);
                 else if (@event.IsActionReleased(primaryAction))
-                    EmitSignal(SignalName.LaneReleased, lane);
+                    LaneReleased?.Invoke(lane);
             }
         }
     }

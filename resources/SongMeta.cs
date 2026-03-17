@@ -20,7 +20,7 @@ public partial class SongMeta : Resource
     public string SongDir { get; set; } = "";
 
     /// <summary>各难度信息，元素为 Dictionary { difficulty, file, level }</summary>
-    [Export] public Array<Dictionary> Charts { get; set; } = [];
+    [Export] public Godot.Collections.Array<Godot.Collections.Dictionary> Charts { get; set; } = [];
 
     public string GetDisplayTitle() =>
         TitleUnicode.Length > 0 ? TitleUnicode : Title;
@@ -31,9 +31,9 @@ public partial class SongMeta : Resource
     public string GetBpmDisplay() =>
         BpmMax > 0f ? $"{(int)Bpm}-{(int)BpmMax}" : ((int)Bpm).ToString();
 
-    public Dictionary GetChartInfo(string difficulty)
+    public Godot.Collections.Dictionary GetChartInfo(string difficulty)
     {
-        foreach (Dictionary info in Charts)
+        foreach (Godot.Collections.Dictionary info in Charts)
             if (info.TryGetValue("difficulty", out var d) && d.AsString() == difficulty)
                 return info;
         return [];

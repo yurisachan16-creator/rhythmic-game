@@ -13,11 +13,23 @@ public partial class GameplayHUD : CanvasLayer
 
     private Tween? _judgmentTween;
 
+    public override void _Ready()
+    {
+        ScoreLabel ??= GetNodeOrNull<Label>("ScoreLabel");
+        ComboLabel ??= GetNodeOrNull<Label>("ComboLabel");
+        AccuracyLabel ??= GetNodeOrNull<Label>("AccuracyLabel");
+        HealthBar ??= GetNodeOrNull<ProgressBar>("HealthBar");
+        JudgmentDisplay ??= GetNodeOrNull<Label>("JudgmentDisplay");
+    }
+
     /// <summary>由 GameplayController 在 _Ready 时调用，订阅 ScoreTracker 信号</summary>
     public void ConnectToTracker(ScoreTracker tracker)
     {
         tracker.ScoreUpdated  += OnScoreUpdated;
         tracker.HealthChanged += OnHealthChanged;
+
+        OnScoreUpdated(tracker.Score, tracker.Combo, tracker.Accuracy);
+        OnHealthChanged(tracker.Health);
     }
 
     public void ShowJudgment(Constants.Judgment judgment)
@@ -25,6 +37,11 @@ public partial class GameplayHUD : CanvasLayer
         if (JudgmentDisplay is null) return;
         JudgmentDisplay.Text    = Constants.JudgmentDisplayText[judgment];
         JudgmentDisplay.Visible = true;
+        JudgmentDisplay.Modulate = new Color(
+            JudgmentDisplay.Modulate.R,
+            JudgmentDisplay.Modulate.G,
+            JudgmentDisplay.Modulate.B,
+            1f);
 
         _judgmentTween?.Kill();
         _judgmentTween = CreateTween();

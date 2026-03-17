@@ -131,7 +131,7 @@ public static class ChartLoader
 
     // ── 私有方法 ──────────────────────────────────────────────────
 
-    private static NoteData? ParseNote(Dictionary dict)
+    private static NoteData? ParseNote(Godot.Collections.Dictionary dict)
     {
         var note = new NoteData();
         string typeStr = dict.GetValueOrDefault("type", "TAP").AsString();
@@ -166,12 +166,12 @@ public static class ChartLoader
 
     private static string ReadFile(string path)
     {
-        if (!FileAccess.FileExists(path))
+        if (!Godot.FileAccess.FileExists(path))
         {
             GD.PushError($"ChartLoader: 文件不存在 - {path}");
             return "";
         }
-        using var file = FileAccess.Open(path, FileAccess.ModeFlags.Read);
+        using var file = Godot.FileAccess.Open(path, Godot.FileAccess.ModeFlags.Read);
         if (file is null)
         {
             GD.PushError($"ChartLoader: 无法打开文件 - {path}");

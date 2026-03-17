@@ -1,0 +1,219 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/ResultScreenUI.cs" id="1_result"]
+
+[node name="ResultScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_result")
+
+[node name="Backdrop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.05, 0.06, 0.08, 1)
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 0
+offset_left = 500.0
+offset_top = 48.0
+offset_right = 780.0
+offset_bottom = 96.0
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 34
+text = "RESULT"
+
+[node name="GradeCaption" type="Label" parent="."]
+offset_left = 340.0
+offset_top = 150.0
+offset_right = 500.0
+offset_bottom = 190.0
+text = "Grade"
+
+[node name="GradeValue" type="Label" parent="."]
+offset_left = 760.0
+offset_top = 140.0
+offset_right = 920.0
+offset_bottom = 200.0
+horizontal_alignment = 2
+theme_override_font_sizes/font_size = 40
+text = "-"
+
+[node name="ScoreCaption" type="Label" parent="."]
+offset_left = 340.0
+offset_top = 210.0
+offset_right = 500.0
+offset_bottom = 250.0
+text = "Score"
+
+[node name="ScoreValue" type="Label" parent="."]
+offset_left = 620.0
+offset_top = 210.0
+offset_right = 920.0
+offset_bottom = 250.0
+horizontal_alignment = 2
+text = "0"
+
+[node name="AccuracyCaption" type="Label" parent="."]
+offset_left = 340.0
+offset_top = 260.0
+offset_right = 500.0
+offset_bottom = 300.0
+text = "Accuracy"
+
+[node name="AccuracyValue" type="Label" parent="."]
+offset_left = 620.0
+offset_top = 260.0
+offset_right = 920.0
+offset_bottom = 300.0
+horizontal_alignment = 2
+text = "0.00%"
+
+[node name="ComboCaption" type="Label" parent="."]
+offset_left = 340.0
+offset_top = 310.0
+offset_right = 500.0
+offset_bottom = 350.0
+text = "Max Combo"
+
+[node name="ComboValue" type="Label" parent="."]
+offset_left = 620.0
+offset_top = 310.0
+offset_right = 920.0
+offset_bottom = 350.0
+horizontal_alignment = 2
+text = "0"
+
+[node name="MaxPerfectCaption" type="Label" parent="."]
+offset_left = 340.0
+offset_top = 390.0
+offset_right = 560.0
+offset_bottom = 430.0
+text = "Perfect+"
+
+[node name="MaxPerfectValue" type="Label" parent="."]
+offset_left = 620.0
+offset_top = 390.0
+offset_right = 920.0
+offset_bottom = 430.0
+horizontal_alignment = 2
+text = "0"
+
+[node name="PerfectCaption" type="Label" parent="."]
+offset_left = 340.0
+offset_top = 430.0
+offset_right = 560.0
+offset_bottom = 470.0
+text = "Perfect"
+
+[node name="PerfectValue" type="Label" parent="."]
+offset_left = 620.0
+offset_top = 430.0
+offset_right = 920.0
+offset_bottom = 470.0
+horizontal_alignment = 2
+text = "0"
+
+[node name="GreatCaption" type="Label" parent="."]
+offset_left = 340.0
+offset_top = 470.0
+offset_right = 560.0
+offset_bottom = 510.0
+text = "Great"
+
+[node name="GreatValue" type="Label" parent="."]
+offset_left = 620.0
+offset_top = 470.0
+offset_right = 920.0
+offset_bottom = 510.0
+horizontal_alignment = 2
+text = "0"
+
+[node name="GoodCaption" type="Label" parent="."]
+offset_left = 340.0
+offset_top = 510.0
+offset_right = 560.0
+offset_bottom = 550.0
+text = "Good"
+
+[node name="GoodValue" type="Label" parent="."]
+offset_left = 620.0
+offset_top = 510.0
+offset_right = 920.0
+offset_bottom = 550.0
+horizontal_alignment = 2
+text = "0"
+
+[node name="BadCaption" type="Label" parent="."]
+offset_left = 340.0
+offset_top = 550.0
+offset_right = 560.0
+offset_bottom = 590.0
+text = "Bad"
+
+[node name="BadValue" type="Label" parent="."]
+offset_left = 620.0
+offset_top = 550.0
+offset_right = 920.0
+offset_bottom = 590.0
+horizontal_alignment = 2
+text = "0"
+
+[node name="MissCaption" type="Label" parent="."]
+offset_left = 340.0
+offset_top = 590.0
+offset_right = 560.0
+offset_bottom = 630.0
+text = "Miss"
+
+[node name="MissValue" type="Label" parent="."]
+offset_left = 620.0
+offset_top = 590.0
+offset_right = 920.0
+offset_bottom = 630.0
+horizontal_alignment = 2
+text = "0"
+
+[node name="BadgeCaption" type="Label" parent="."]
+offset_left = 340.0
+offset_top = 650.0
+offset_right = 500.0
+offset_bottom = 690.0
+text = "Badge"
+
+[node name="BadgeValue" type="Label" parent="."]
+offset_left = 760.0
+offset_top = 650.0
+offset_right = 920.0
+offset_bottom = 690.0
+horizontal_alignment = 2
+text = "-"
+
+[node name="NewRecordValue" type="Label" parent="."]
+offset_left = 500.0
+offset_top = 700.0
+offset_right = 780.0
+offset_bottom = 736.0
+horizontal_alignment = 1
+text = ""
+
+[node name="RetryButton" type="Button" parent="."]
+offset_left = 430.0
+offset_top = 760.0
+offset_right = 610.0
+offset_bottom = 808.0
+text = "Retry"
+
+[node name="BackButton" type="Button" parent="."]
+offset_left = 670.0
+offset_top = 760.0
+offset_right = 850.0
+offset_bottom = 808.0
+text = "Back"
