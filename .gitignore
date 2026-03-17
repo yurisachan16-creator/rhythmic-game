@@ -1,0 +1,11 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# Windows artifacts
+nul
+Thumbs.db
+Desktop.ini
+
+# OS
+.DS_Store
