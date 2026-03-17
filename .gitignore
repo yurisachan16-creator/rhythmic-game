@@ -9,3 +9,11 @@ Desktop.ini
 
 # OS
 .DS_Store
+
+# C# / .NET
+bin/
+obj/
+.vs/
+*.user
+*.suo
+.idea/
