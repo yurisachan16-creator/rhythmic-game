@@ -22,3 +22,4 @@ obj/
 tools/
 *.log
 temp-compile.*
+node_3d.tscn
